@@ -62,6 +62,71 @@ const run = async () => {
       const expert = await carExpertCollection.findOne(query);
       res.send(expert);
     });
+
+    //service post
+    app.post("/serviceAdd", async (req, res) => {
+      const serviceInfo = req.body;
+      const result = await carServiceCollection.insertOne(serviceInfo);
+      res.send(result);
+    });
+
+    //Expert details post
+    app.post("/expertAdd", async (req, res) => {
+      const expertInfo = req.body;
+      const result = await carExpertCollection.insertOne(expertInfo);
+      console.log(expertInfo);
+      res.send(result);
+    });
+
+    //update service data
+    app.put("/serviceUpdate/:id", async (req, res) => {
+      const updateInfo = req.body;
+      const id = req.params.id;
+      const filter = { _id: ObjectId(id) };
+      const updateDoc = {
+        $set: updateInfo,
+      };
+      const options = { upsert: true };
+      const result = await carServiceCollection.updateOne(
+        filter,
+        updateDoc,
+        options
+      );
+      res.send(result);
+    });
+
+    //update expert data
+    app.put("/expertUpdate/:id", async (req, res) => {
+      const id = req.params.id;
+      const updateExpertInfo = req.body;
+      const query = { _id: ObjectId(id) };
+      const updateExpert = {
+        $set: updateExpertInfo,
+      };
+      const options = { upsert: true };
+      const result = await carExpertCollection.updateOne(
+        query,
+        updateExpert,
+        options
+      );
+      res.send(result);
+    });
+
+    //Delete service data
+    app.delete("/serviceDelete/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await carServiceCollection.deleteOne(query);
+      res.send(result);
+    });
+
+    // Delete Expert data
+    app.delete("/expertDelete/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await carExpertCollection.deleteOne(query);
+      res.send(result);
+    });
   } finally {
     // await client.close();
   }
